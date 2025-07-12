@@ -472,7 +472,12 @@ const Questions: React.FC = () => {
                       <div className="flex items-center gap-6 mt-4 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
                           <MessageSquare className="h-4 w-4" />
-                          {question.answers?.length || 0} answers
+                          {/* Use live answer count from answersQueries if available */}
+                          {(() => {
+                            const idx = questions.findIndex((qq: any) => qq._id === question._id);
+                            const liveAnswers = answersQueries[idx]?.data;
+                            return Array.isArray(liveAnswers) ? liveAnswers.length : (question.answers?.length || 0);
+                          })()} answers
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
