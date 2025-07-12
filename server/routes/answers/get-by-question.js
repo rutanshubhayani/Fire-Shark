@@ -89,7 +89,7 @@ async function handleGetAnswersByQuestion(req, res) {
     return res.status(200).json({
       status: 200,
       message: 'Answers retrieved successfully',
-      answers: answersResponse,
+      answers: Array.isArray(answers) ? answers : [],
     });
   } catch (err) {
     console.error('Get answers by question error:', err);

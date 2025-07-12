@@ -1,4 +1,5 @@
 const { findOne, updateDocument } = require('../../helpers');
+const { createNotification } = require('../../utils');
 
 /**
  * @swagger
@@ -122,6 +123,17 @@ async function handleAcceptAnswer(req, res) {
         acceptedAnswer: id,
       }
     );
+
+    // Create notification for answer author
+    const questionAuthor = await findOne('user', { _id: userId });
+    if (questionAuthor) {
+      await createNotification({
+        user: answer.author,
+        type: 'accept',
+        message: `${questionAuthor.first_name} ${questionAuthor.last_name} accepted your answer to "${question.title}"`,
+        link: `/questions/${answer.question}#answer-${id}`,
+      });
+    }
 
     // Populate author information
     const populatedQuestion = await updatedQuestion.populate(

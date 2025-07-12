@@ -1,4 +1,5 @@
-const { findPopulateSortAndLimit, find } = require('../../helpers');
+const { find, findOne } = require('../../helpers');
+const Models = require('../../models');
 
 /**
  * @swagger
@@ -92,28 +93,22 @@ async function handleGetNotifications(req, res) {
       query.isRead = false;
     }
 
-    // Get notifications with pagination
-    const notifications = await findPopulateSortAndLimit(
-      'notification',
-      query,
-      null, // No population needed for notifications
-      null,
-      { createdAt: -1 }, // Sort by newest first
-      skip,
-      limitNum
-    );
+    // Get notifications with pagination using direct model query
+    const notifications = await Models.notification
+      .find(query)
+      .sort({ createdAt: -1 }) // Sort by newest first
+      .skip(skip)
+      .limit(limitNum)
+      .lean();
 
     // Get total count for pagination
-    const totalNotifications = await find(
-      'notification',
-      query
-    ).countDocuments();
+    const totalNotifications = await Models.notification.countDocuments(query);
 
     // Get unread count
-    const unreadCount = await find('notification', {
+    const unreadCount = await Models.notification.countDocuments({
       user: userId,
       isRead: false,
-    }).countDocuments();
+    });
 
     // Calculate pagination info
     const totalPages = Math.ceil(totalNotifications / limitNum);
@@ -123,7 +118,7 @@ async function handleGetNotifications(req, res) {
     return res.status(200).json({
       status: 200,
       message: 'Notifications retrieved successfully',
-      notifications,
+      notifications: Array.isArray(notifications) ? notifications : [],
       pagination: {
         currentPage: pageNum,
         totalPages,

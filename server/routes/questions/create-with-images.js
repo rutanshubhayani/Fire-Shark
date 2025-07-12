@@ -1,24 +1,8 @@
-const multer = require('multer');
 const Joi = require('joi');
 const { uploadQuestionImage } = require('../../lib');
 const { insertNewDocument, findOne } = require('../../helpers');
 const { createNotification } = require('../../utils');
-
-// Configure multer for memory storage
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit for question images
-  },
-  fileFilter: (req, file, cb) => {
-    // Check file type
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'), false);
-    }
-  },
-});
+const { imageUpload, handleImageUploadError } = require('../../middleware/imageUpload');
 
 // Validation schema for question creation with images
 const createQuestionWithImagesSchema = Joi.object({

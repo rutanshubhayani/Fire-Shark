@@ -49,7 +49,7 @@ async function handleEmailVerification(req, res) {
 
   try {
     if (!token) {
-      return res.redirect(frontendUrl + '?verified=fail');
+      return res.redirect(frontendUrl + '?verified=failed');
     }
 
     // Find user with this verification token
@@ -60,10 +60,25 @@ async function handleEmailVerification(req, res) {
 
     if (!user) {
       // Redirect to frontend with error
-      return res.redirect(frontendUrl + '?verified=fail');
+      return res.redirect(frontendUrl + '?verified=failed');
     }
 
-    // Update user to mark email as verified
+    // Check if this is an email change verification
+    if (user.newEmail) {
+      // Update user with new email and mark as verified
+      await updateDocument(
+        'user',
+        { _id: user._id },
+        {
+          email: user.newEmail,
+          newEmail: null,
+          isEmailVerified: true,
+          emailVerificationToken: null,
+          emailVerificationExpires: null,
+        }
+      );
+    } else {
+      // Regular email verification
     await updateDocument(
       'user',
       { _id: user._id },
@@ -73,12 +88,13 @@ async function handleEmailVerification(req, res) {
         emailVerificationExpires: null,
       }
     );
+    }
 
     // Redirect to frontend with success
     return res.redirect(frontendUrl + '?verified=success');
   } catch (error) {
     // Redirect to frontend with error
-    return res.redirect(frontendUrl + '?verified=fail');
+    return res.redirect(frontendUrl + '?verified=failed');
   }
 }
 

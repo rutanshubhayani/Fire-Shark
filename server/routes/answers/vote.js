@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { findOne, updateDocument } = require('../../helpers');
+const { createNotification } = require('../../utils');
 
 const voteSchema = Joi.object({
   voteType: Joi.string().valid('upvote', 'downvote').required().messages({
@@ -134,6 +135,19 @@ async function handleVoteAnswer(req, res) {
       { _id: id },
       updateQuery
     );
+
+    // Create notification for upvotes (only when adding a new upvote)
+    if (isUpvote && !hasVoted) {
+      const voter = await findOne('user', { _id: userId });
+      if (voter) {
+        await createNotification({
+          user: answer.author,
+          type: 'upvote',
+          message: `${voter.first_name} ${voter.last_name} upvoted your answer`,
+          link: `/questions/${answer.question}#answer-${id}`,
+        });
+      }
+    }
 
     // Populate author information
     const populatedAnswer = await updatedAnswer.populate(

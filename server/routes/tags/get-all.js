@@ -120,7 +120,7 @@ async function handleGetAllTags(req, res) {
     return res.status(200).json({
       status: 200,
       message: 'Tags retrieved successfully',
-      tags: tagsWithCount,
+      tags: Array.isArray(tagsWithCount) ? tagsWithCount : [],
     });
   } catch (err) {
     console.error('Get tags error:', err);

@@ -2,7 +2,7 @@ const multer = require('multer');
 const Joi = require('joi');
 const { uploadAnswerImage } = require('../../lib');
 const { insertNewDocument, findOne, updateDocument } = require('../../helpers');
-const { createNotification } = require('../../utils');
+const { createNotification, createMentionNotifications } = require('../../utils');
 
 // Configure multer for memory storage
 const upload = multer({
@@ -174,6 +174,13 @@ async function handleCreateAnswerWithImages(req, res) {
     // Save answer to database first to get the ID
     const savedAnswer = await insertNewDocument('answer', answerData);
 
+    // Create mention notifications for users mentioned in answer body
+    await createMentionNotifications(
+      body,
+      userId,
+      `/questions/${questionId}#answer-${savedAnswer._id}`
+    );
+
     // Upload images if provided
     const uploadedImages = [];
     if (uploadedFiles.length > 0) {
@@ -235,7 +242,7 @@ async function handleCreateAnswerWithImages(req, res) {
     const answerResponse = {
       _id: populatedAnswer._id,
       body: populatedAnswer.body,
-      images: populatedAnswer.images,
+      images: populatedAnswer.images || [],
       author: {
         _id: populatedAnswer.author._id,
         first_name: populatedAnswer.author.first_name,
@@ -268,7 +275,7 @@ async function handleCreateAnswerWithImages(req, res) {
     console.error('Create answer with images error:', err);
     return res.status(500).json({
       success: false,
-      message: err.message || 'Internal server error. Please try again later.',
+      message: 'Internal server error. Please try again later.',
     });
   }
 }

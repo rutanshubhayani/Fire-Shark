@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { SECRET } = require('../../../config');
 const { insertNewDocument } = require('../../../helpers');
 const Joi = require('joi');
+const crypto = require('crypto');
 
 const guestSignupSchema = Joi.object({
   first_name: Joi.string().min(2).max(50).required().messages({
@@ -83,10 +84,17 @@ async function handleGuestSignup(req, res) {
   try {
     await guestSignupSchema.validateAsync(req.body);
 
+    // Generate a unique short id for guest
+    const shortId = crypto.randomBytes(4).toString('hex');
+    const guestUsername = `guest-${shortId}`;
+    const guestEmail = `guest-${shortId}@guest.local`;
+
     // Create guest user object
     const guestUser = {
       first_name: first_name.trim(),
       last_name: last_name.trim(),
+      username: guestUsername,
+      email: guestEmail,
       role: 'guest',
       isEmailVerified: true, // Guests don't need email verification
       avatar: '',

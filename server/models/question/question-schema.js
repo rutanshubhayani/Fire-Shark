@@ -61,6 +61,10 @@ const questionSchema = new mongoose.Schema(
         ref: 'user',
       },
     ],
+    voteCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

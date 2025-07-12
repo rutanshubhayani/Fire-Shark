@@ -6,7 +6,7 @@ DB_PASS=fire_shark
 
 JWT_SECRET=fire_shark_jwt_secret_2025
 
-FRONTEND_URL_DEV=http://localhost:3000
+FRONTEND_URL_DEV=http://localhost:5173
 FRONTEND_URL_PROD=https://yourdomain.com
 
 MAIL_HOST=smtp.gmail.com

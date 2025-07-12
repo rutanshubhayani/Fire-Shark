@@ -1,23 +1,7 @@
 const express = require('express');
-const multer = require('multer');
 const router = express.Router();
 const { tokenVerification } = require('../../middleware');
-
-// Configure multer for memory storage
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit for answer images
-  },
-  fileFilter: (req, file, cb) => {
-    // Check file type
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed'), false);
-    }
-  },
-});
+const { imageUpload, handleImageUploadError } = require('../../middleware/imageUpload');
 
 const createAnswer = require('./create');
 const createAnswerWithImages = require('./create-with-images');
@@ -35,7 +19,8 @@ router.post('/', tokenVerification, createAnswer);
 router.post(
   '/create-with-images',
   tokenVerification,
-  upload.array('images', 5),
+  imageUpload.array('images', 5),
+  handleImageUploadError,
   createAnswerWithImages
 );
 router.put('/:id', tokenVerification, updateAnswer);

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const { insertNewDocument, findOne } = require('../../helpers');
-const { createNotification } = require('../../utils');
+const { createNotification, createMentionNotifications } = require('../../utils');
 
 const createQuestionSchema = Joi.object({
   title: Joi.string().min(10).max(200).required().messages({
@@ -136,6 +136,14 @@ async function handleCreateQuestion(req, res) {
 
     // Save question to database
     const savedQuestion = await insertNewDocument('question', questionData);
+
+    // Create mention notifications for users mentioned in title or description
+    const contentWithMentions = `${title} ${description}`;
+    await createMentionNotifications(
+      contentWithMentions,
+      userId,
+      `/questions/${savedQuestion._id}`
+    );
 
     // Populate author information
     const populatedQuestion = await savedQuestion.populate(

@@ -106,6 +106,7 @@ async function handleResendVerification(req, res) {
       return res.status(400).json({
         status: 400,
         message: 'This email is already verified.',
+        redirectUrl: `${process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV}/email-already-verified`
       });
     }
 

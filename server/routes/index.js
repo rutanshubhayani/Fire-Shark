@@ -5,6 +5,7 @@ const questions = require('./questions');
 const answers = require('./answers');
 const tags = require('./tags');
 const notifications = require('./notifications');
+const stats = require('./stats');
 const {
   handleUploadAvatar,
   handleRemoveAvatar,
@@ -35,6 +36,9 @@ router.use('/tags', tags);
 // NOTIFICATIONS Routes * /api/notifications/*
 router.use('/notifications', notifications);
 
+// STATS Route * /api/stats
+router.use('/stats', stats);
+
 // USERS Routes * /api/users/*
 router.post(
   '/users/upload-avatar',
@@ -43,6 +47,7 @@ router.post(
   handleUploadAvatar
 );
 router.delete('/users/remove-avatar', tokenVerification, handleRemoveAvatar);
+router.use('/users', require('./users'));
 router.use('/users', testAvatar);
 
 // Clear Database Route * /api/clear-database

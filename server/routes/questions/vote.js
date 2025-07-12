@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { findOne, updateDocument } = require('../../helpers');
+const { createNotification } = require('../../utils');
 
 const voteSchema = Joi.object({
   voteType: Joi.string().valid('upvote', 'downvote').required().messages({
@@ -119,21 +120,45 @@ async function handleVoteQuestion(req, res) {
       // Remove vote if already voted the same way
       updateQuery = {
         $pull: { [voteArray]: userId },
+        $inc: { voteCount: isUpvote ? -1 : 1 },
       };
     } else {
       // Add vote and remove opposite vote if exists
       updateQuery = {
         $addToSet: { [voteArray]: userId },
         $pull: { [oppositeArray]: userId },
+        $inc: { voteCount: 0 },
       };
+      // If adding upvote
+      if (isUpvote) {
+        updateQuery.$inc.voteCount = 1;
+        if (hasOppositeVote) updateQuery.$inc.voteCount = 2; // removing downvote and adding upvote
+      } else {
+        // Adding downvote
+        updateQuery.$inc.voteCount = -1;
+        if (hasOppositeVote) updateQuery.$inc.voteCount = -2; // removing upvote and adding downvote
+      }
     }
 
     // Update question
-    const updatedQuestion = await updateDocument(
-      'question',
+    const updatedQuestion = await require('../../models').question.findOneAndUpdate(
       { _id: id },
-      updateQuery
+      updateQuery,
+      { new: true }
     );
+
+    // Create notification for upvotes (only when adding a new upvote)
+    if (isUpvote && !hasVoted) {
+      const voter = await findOne('user', { _id: userId });
+      if (voter) {
+        await createNotification({
+          user: question.author,
+          type: 'upvote',
+          message: `${voter.first_name} ${voter.last_name} upvoted your question "${question.title}"`,
+          link: `/questions/${id}`,
+        });
+      }
+    }
 
     // Populate author information
     const populatedQuestion = await updatedQuestion.populate(
@@ -185,4 +210,90 @@ async function handleVoteQuestion(req, res) {
   }
 }
 
+// GET /api/questions/:id/vote - get current vote state
+async function handleGetQuestionVote(req, res) {
+  try {
+    const { id } = req.params;
+    const question = await findOne('question', { _id: id });
+    if (!question) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Question not found',
+      });
+    }
+    const upvotes = question.upvotes || [];
+    const downvotes = question.downvotes || [];
+    const voteCount = upvotes.length - downvotes.length;
+    return res.status(200).json({
+      status: 200,
+      upvotes,
+      downvotes,
+      voteCount,
+    });
+  } catch (err) {
+    console.error('Get question vote error:', err);
+    return res.status(500).json({
+      status: 500,
+      message: 'Internal server error. Please try again later.',
+    });
+  }
+}
+
+// GET /api/questions/:id/voters - get list of users who upvoted/downvoted
+async function handleGetQuestionVoters(req, res) {
+  try {
+    const { id } = req.params;
+    const question = await findOne('question', { _id: id });
+    if (!question) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Question not found',
+      });
+    }
+    // Populate upvotes and downvotes with user info
+    await question.populate([
+      { path: 'upvotes', select: 'username first_name last_name avatar' },
+      { path: 'downvotes', select: 'username first_name last_name avatar' }
+    ]);
+    return res.status(200).json({
+      status: 200,
+      upvoters: question.upvotes,
+      downvoters: question.downvotes,
+    });
+  } catch (err) {
+    console.error('Get question voters error:', err);
+    return res.status(500).json({
+      status: 500,
+      message: 'Internal server error. Please try again later.',
+    });
+  }
+}
+
+// GET /api/questions/:id/votecount - get only the voteCount field
+async function handleGetQuestionVoteCount(req, res) {
+  try {
+    const { id } = req.params;
+    const question = await findOne('question', { _id: id });
+    if (!question) {
+      return res.status(404).json({
+        status: 404,
+        message: 'Question not found',
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      voteCount: question.voteCount || 0,
+    });
+  } catch (err) {
+    console.error('Get question voteCount error:', err);
+    return res.status(500).json({
+      status: 500,
+      message: 'Internal server error. Please try again later.',
+    });
+  }
+}
+
 module.exports = handleVoteQuestion;
+module.exports.handleGetQuestionVote = handleGetQuestionVote;
+module.exports.handleGetQuestionVoters = handleGetQuestionVoters;
+module.exports.handleGetQuestionVoteCount = handleGetQuestionVoteCount;

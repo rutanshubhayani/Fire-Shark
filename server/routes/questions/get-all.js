@@ -1,4 +1,5 @@
 const { findPopulateSortAndLimit, find } = require('../../helpers');
+const Models = require('../../models');
 
 /**
  * @swagger
@@ -40,6 +41,11 @@ const { findPopulateSortAndLimit, find } = require('../../helpers');
  *         schema:
  *           type: string
  *         description: Filter questions by author username
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search questions by title, description, or tags
  *     responses:
  *       200:
  *         description: Questions retrieved successfully
@@ -85,7 +91,7 @@ const { findPopulateSortAndLimit, find } = require('../../helpers');
  */
 async function handleGetQuestions(req, res) {
   try {
-    const { page = 1, limit = 10, sort = 'newest', tag, author } = req.query;
+    const { page = 1, limit = 10, sort = 'most_voted', tag, author, search } = req.query;
 
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 50); // Max 50 per page
@@ -93,6 +99,14 @@ async function handleGetQuestions(req, res) {
 
     // Build query object
     const query = {};
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
+    }
 
     if (tag) {
       query.tags = { $in: [tag.toLowerCase()] };
@@ -127,14 +141,14 @@ async function handleGetQuestions(req, res) {
         sortObj = { createdAt: 1 };
         break;
       case 'most_voted':
-        sortObj = {
-          $expr: {
-            $subtract: [{ $size: '$upvotes' }, { $size: '$downvotes' }],
-          },
-        };
+        sortObj = { voteCount: -1 };
+        break;
+      case 'least_voted':
+        sortObj = { voteCount: 1 };
         break;
       case 'most_answered':
-        sortObj = { $expr: { $size: '$answers' } };
+        // Use a simpler approach for answer sorting
+        sortObj = { answers: -1 };
         break;
       default: // newest
         sortObj = { createdAt: -1 };
@@ -152,7 +166,7 @@ async function handleGetQuestions(req, res) {
     );
 
     // Get total count for pagination
-    const totalQuestions = await find('question', query).countDocuments();
+    const totalQuestions = await Models.question.countDocuments(query);
 
     // Calculate pagination info
     const totalPages = Math.ceil(totalQuestions / limitNum);
@@ -160,7 +174,7 @@ async function handleGetQuestions(req, res) {
     const hasPrevPage = pageNum > 1;
 
     // Format questions for response
-    const formattedQuestions = questions.map(question => ({
+    const formattedQuestions = Array.isArray(questions) ? questions.map(question => ({
       _id: question._id,
       title: question.title,
       description: question.description,
@@ -179,7 +193,7 @@ async function handleGetQuestions(req, res) {
       downvotes: question.downvotes,
       createdAt: question.createdAt,
       updatedAt: question.updatedAt,
-    }));
+    })) : [];
 
     return res.status(200).json({
       status: 200,
