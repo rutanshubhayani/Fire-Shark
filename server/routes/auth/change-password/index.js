@@ -92,14 +92,20 @@ const Joi = require('joi');
 
 const schema = Joi.object({
   oldPassword: Joi.string().required().messages({
-    'any.required': 'Old password is required'
+    'any.required': 'Old password is required',
   }),
-  newPassword: Joi.string().min(6).max(30).pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])')).required().messages({
-    'string.min': 'Password must be at least 6 characters long',
-    'string.max': 'Password cannot exceed 30 characters',
-    'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-    'any.required': 'New password is required'
-  })
+  newPassword: Joi.string()
+    .min(6)
+    .max(30)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])'))
+    .required()
+    .messages({
+      'string.min': 'Password must be at least 6 characters long',
+      'string.max': 'Password cannot exceed 30 characters',
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+      'any.required': 'New password is required',
+    }),
 });
 
 async function handleChangePassword(req, res) {
@@ -109,7 +115,9 @@ async function handleChangePassword(req, res) {
 
     // User must be logged in (req.userId set by middleware)
     if (!req.userId) {
-      return res.status(401).json({ status: 401, message: 'Authentication required.' });
+      return res
+        .status(401)
+        .json({ status: 401, message: 'Authentication required.' });
     }
 
     const user = await findOne('user', { _id: req.userId });
@@ -118,13 +126,17 @@ async function handleChangePassword(req, res) {
     }
 
     if (!bcrypt.compareSync(oldPassword, user.password)) {
-      return res.status(401).json({ status: 401, message: 'Old password is incorrect.' });
+      return res
+        .status(401)
+        .json({ status: 401, message: 'Old password is incorrect.' });
     }
 
     const hashed = bcrypt.hashSync(newPassword, 12);
     await updateDocument('user', { _id: user._id }, { password: hashed });
-    
-    return res.status(200).json({ status: 200, message: 'Password changed successfully.' });
+
+    return res
+      .status(200)
+      .json({ status: 200, message: 'Password changed successfully.' });
   } catch (err) {
     if (err.isJoi) {
       return res.status(400).json({

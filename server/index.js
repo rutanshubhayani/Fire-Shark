@@ -51,7 +51,9 @@ app.get('/verify-email', (req, res) => {
 app.get('/reset-password', (req, res) => {
   const { token, reset } = req.query;
   if (reset === 'success') {
-    return res.send('<h2>Password reset successfully! You can now log in with your new password.</h2>');
+    return res.send(
+      '<h2>Password reset successfully! You can now log in with your new password.</h2>'
+    );
   }
   if (reset === 'fail') {
     return res.send('<h2>Password reset failed or link expired.</h2>');

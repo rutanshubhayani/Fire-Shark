@@ -96,4 +96,4 @@ async function handleDeleteQuestion(req, res) {
   }
 }
 
-module.exports = handleDeleteQuestion; 
+module.exports = handleDeleteQuestion;

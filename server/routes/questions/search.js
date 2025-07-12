@@ -105,8 +105,8 @@ async function handleSearchQuestions(req, res) {
       $or: [
         { title: { $regex: q, $options: 'i' } },
         { description: { $regex: q, $options: 'i' } },
-        { tags: { $in: [new RegExp(q, 'i')] } }
-      ]
+        { tags: { $in: [new RegExp(q, 'i')] } },
+      ],
     };
 
     // Build sort object
@@ -116,7 +116,11 @@ async function handleSearchQuestions(req, res) {
         sortObj = { createdAt: 1 };
         break;
       case 'most_voted':
-        sortObj = { $expr: { $subtract: [{ $size: '$upvotes' }, { $size: '$downvotes' }] } };
+        sortObj = {
+          $expr: {
+            $subtract: [{ $size: '$upvotes' }, { $size: '$downvotes' }],
+          },
+        };
         break;
       case 'most_answered':
         sortObj = { $expr: { $size: '$answers' } };
@@ -125,9 +129,9 @@ async function handleSearchQuestions(req, res) {
         sortObj = { createdAt: -1 };
         break;
       default: // relevance - sort by title match first, then content
-        sortObj = { 
+        sortObj = {
           title: { $regex: q, $options: 'i' } ? 1 : 0,
-          createdAt: -1 
+          createdAt: -1,
         };
     }
 
@@ -192,4 +196,4 @@ async function handleSearchQuestions(req, res) {
   }
 }
 
-module.exports = handleSearchQuestions; 
+module.exports = handleSearchQuestions;

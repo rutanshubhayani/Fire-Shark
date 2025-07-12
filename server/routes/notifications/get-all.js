@@ -79,11 +79,7 @@ const { findPopulateSortAndLimit, find } = require('../../helpers');
 async function handleGetNotifications(req, res) {
   try {
     const userId = req.userId;
-    const {
-      page = 1,
-      limit = 20,
-      unread,
-    } = req.query;
+    const { page = 1, limit = 20, unread } = req.query;
 
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 50); // Max 50 per page
@@ -91,7 +87,7 @@ async function handleGetNotifications(req, res) {
 
     // Build query object
     const query = { user: userId };
-    
+
     if (unread === 'true') {
       query.isRead = false;
     }
@@ -108,12 +104,15 @@ async function handleGetNotifications(req, res) {
     );
 
     // Get total count for pagination
-    const totalNotifications = await find('notification', query).countDocuments();
+    const totalNotifications = await find(
+      'notification',
+      query
+    ).countDocuments();
 
     // Get unread count
-    const unreadCount = await find('notification', { 
-      user: userId, 
-      isRead: false 
+    const unreadCount = await find('notification', {
+      user: userId,
+      isRead: false,
     }).countDocuments();
 
     // Calculate pagination info
@@ -143,4 +142,4 @@ async function handleGetNotifications(req, res) {
   }
 }
 
-module.exports = handleGetNotifications; 
+module.exports = handleGetNotifications;

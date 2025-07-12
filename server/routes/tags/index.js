@@ -17,4 +17,4 @@ router.post('/', tokenVerification, createTag);
 router.put('/:id', tokenVerification, updateTag);
 router.delete('/:id', tokenVerification, deleteTag);
 
-module.exports = router; 
+module.exports = router;

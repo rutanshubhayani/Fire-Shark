@@ -9,10 +9,15 @@ const updateQuestionSchema = Joi.object({
   description: Joi.string().min(20).optional().messages({
     'string.min': 'Description must be at least 20 characters long',
   }),
-  tags: Joi.array().items(Joi.string().min(1).max(20)).min(1).max(5).optional().messages({
-    'array.min': 'At least one tag is required',
-    'array.max': 'Cannot exceed 5 tags',
-  }),
+  tags: Joi.array()
+    .items(Joi.string().min(1).max(20))
+    .min(1)
+    .max(5)
+    .optional()
+    .messages({
+      'array.min': 'At least one tag is required',
+      'array.max': 'Cannot exceed 5 tags',
+    }),
 });
 
 /**
@@ -133,14 +138,23 @@ async function handleUpdateQuestion(req, res) {
     // Prepare update data
     const updateFields = {};
     if (updateData.title) updateFields.title = updateData.title.trim();
-    if (updateData.description) updateFields.description = updateData.description.trim();
-    if (updateData.tags) updateFields.tags = updateData.tags.map(tag => tag.toLowerCase().trim());
+    if (updateData.description)
+      updateFields.description = updateData.description.trim();
+    if (updateData.tags)
+      updateFields.tags = updateData.tags.map(tag => tag.toLowerCase().trim());
 
     // Update question
-    const updatedQuestion = await updateDocument('question', { _id: id }, updateFields);
+    const updatedQuestion = await updateDocument(
+      'question',
+      { _id: id },
+      updateFields
+    );
 
     // Populate author information
-    const populatedQuestion = await updatedQuestion.populate('author', 'first_name last_name username avatar');
+    const populatedQuestion = await updatedQuestion.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Create response object
     const questionResponse = {
@@ -185,4 +199,4 @@ async function handleUpdateQuestion(req, res) {
   }
 }
 
-module.exports = handleUpdateQuestion; 
+module.exports = handleUpdateQuestion;

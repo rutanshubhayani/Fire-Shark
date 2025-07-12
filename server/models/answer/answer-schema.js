@@ -7,6 +7,22 @@ const answerSchema = new mongoose.Schema(
       type: schemaType.TypeString, // Store as HTML or markdown
       required: true,
     },
+    images: [
+      {
+        url: {
+          type: schemaType.TypeString,
+          required: true,
+        },
+        publicId: {
+          type: schemaType.TypeString,
+          required: true,
+        },
+        caption: {
+          type: schemaType.TypeString,
+          default: '',
+        },
+      },
+    ],
     author: {
       type: schemaType.ObjectId,
       ref: 'user',

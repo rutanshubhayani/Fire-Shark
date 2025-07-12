@@ -8,7 +8,7 @@ const { insertNewDocument, findOne } = require('../helpers');
  * @param {string} notificationData.message - Notification message
  * @param {string} notificationData.link - Link to related content
  */
-const createNotification = async (notificationData) => {
+const createNotification = async notificationData => {
   try {
     const notification = await insertNewDocument('notification', {
       user: notificationData.user,
@@ -17,7 +17,7 @@ const createNotification = async (notificationData) => {
       link: notificationData.link || '',
       isRead: false,
     });
-    
+
     return notification;
   } catch (error) {
     console.error('Error creating notification:', error);
@@ -36,16 +36,18 @@ const createMentionNotifications = async (content, authorId, link) => {
     // Extract usernames mentioned with @ symbol
     const mentionRegex = /@(\w+)/g;
     const mentions = content.match(mentionRegex);
-    
+
     if (!mentions) return;
-    
+
     const author = await findOne('user', { _id: authorId });
     if (!author) return;
-    
+
     for (const mention of mentions) {
       const username = mention.substring(1); // Remove @ symbol
-      const mentionedUser = await findOne('user', { username: username.toLowerCase() });
-      
+      const mentionedUser = await findOne('user', {
+        username: username.toLowerCase(),
+      });
+
       if (mentionedUser && mentionedUser._id.toString() !== authorId) {
         await createNotification({
           user: mentionedUser._id,
@@ -65,7 +67,7 @@ const createMentionNotifications = async (content, authorId, link) => {
  * @param {string} html - HTML content to sanitize
  * @returns {string} Sanitized HTML
  */
-const sanitizeHTML = (html) => {
+const sanitizeHTML = html => {
   // Basic HTML sanitization - in production, use a library like DOMPurify
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -79,7 +81,7 @@ const sanitizeHTML = (html) => {
  * @param {string} title - Question title
  * @returns {string} URL-friendly slug
  */
-const generateSlug = (title) => {
+const generateSlug = title => {
   return title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')

@@ -100,8 +100,8 @@ async function handleGetTagByName(req, res) {
           from: 'users',
           localField: 'author',
           foreignField: '_id',
-          as: 'author'
-        }
+          as: 'author',
+        },
       },
       { $unwind: '$author' },
       {
@@ -121,19 +121,19 @@ async function handleGetTagByName(req, res) {
             first_name: '$author.first_name',
             last_name: '$author.last_name',
             username: '$author.username',
-            avatar: '$author.avatar'
-          }
-        }
+            avatar: '$author.avatar',
+          },
+        },
       },
       { $sort: { createdAt: -1 } },
       { $skip: skip },
-      { $limit: limitNum }
+      { $limit: limitNum },
     ]);
 
     // Get total count for pagination
     const totalQuestions = await getAggregate('question', [
       { $match: { tags: name.toLowerCase() } },
-      { $count: 'total' }
+      { $count: 'total' },
     ]);
 
     const totalCount = totalQuestions.length > 0 ? totalQuestions[0].total : 0;
@@ -173,4 +173,4 @@ async function handleGetTagByName(req, res) {
   }
 }
 
-module.exports = handleGetTagByName; 
+module.exports = handleGetTagByName;

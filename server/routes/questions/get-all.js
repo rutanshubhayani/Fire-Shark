@@ -85,13 +85,7 @@ const { findPopulateSortAndLimit, find } = require('../../helpers');
  */
 async function handleGetQuestions(req, res) {
   try {
-    const {
-      page = 1,
-      limit = 10,
-      sort = 'newest',
-      tag,
-      author,
-    } = req.query;
+    const { page = 1, limit = 10, sort = 'newest', tag, author } = req.query;
 
     const pageNum = parseInt(page);
     const limitNum = Math.min(parseInt(limit), 50); // Max 50 per page
@@ -99,11 +93,11 @@ async function handleGetQuestions(req, res) {
 
     // Build query object
     const query = {};
-    
+
     if (tag) {
       query.tags = { $in: [tag.toLowerCase()] };
     }
-    
+
     if (author) {
       // First find user by username
       const user = await find('user', { username: author.toLowerCase() });
@@ -133,7 +127,11 @@ async function handleGetQuestions(req, res) {
         sortObj = { createdAt: 1 };
         break;
       case 'most_voted':
-        sortObj = { $expr: { $subtract: [{ $size: '$upvotes' }, { $size: '$downvotes' }] } };
+        sortObj = {
+          $expr: {
+            $subtract: [{ $size: '$upvotes' }, { $size: '$downvotes' }],
+          },
+        };
         break;
       case 'most_answered':
         sortObj = { $expr: { $size: '$answers' } };
@@ -166,6 +164,7 @@ async function handleGetQuestions(req, res) {
       _id: question._id,
       title: question.title,
       description: question.description,
+      images: question.images || [],
       tags: question.tags,
       author: {
         _id: question.author._id,
@@ -203,4 +202,4 @@ async function handleGetQuestions(req, res) {
   }
 }
 
-module.exports = handleGetQuestions; 
+module.exports = handleGetQuestions;

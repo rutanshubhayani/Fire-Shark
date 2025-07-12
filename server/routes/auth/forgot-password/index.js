@@ -147,7 +147,8 @@ async function handleForgotPassword(req, res) {
 
       return res.status(200).json({
         status: 200,
-        message: 'Password reset email sent successfully! Please check your inbox.',
+        message:
+          'Password reset email sent successfully! Please check your inbox.',
       });
     } catch (emailError) {
       console.error('Email sending failed:', emailError);

@@ -118,21 +118,28 @@ async function handleVoteQuestion(req, res) {
     if (hasVoted) {
       // Remove vote if already voted the same way
       updateQuery = {
-        $pull: { [voteArray]: userId }
+        $pull: { [voteArray]: userId },
       };
     } else {
       // Add vote and remove opposite vote if exists
       updateQuery = {
         $addToSet: { [voteArray]: userId },
-        $pull: { [oppositeArray]: userId }
+        $pull: { [oppositeArray]: userId },
       };
     }
 
     // Update question
-    const updatedQuestion = await updateDocument('question', { _id: id }, updateQuery);
+    const updatedQuestion = await updateDocument(
+      'question',
+      { _id: id },
+      updateQuery
+    );
 
     // Populate author information
-    const populatedQuestion = await updatedQuestion.populate('author', 'first_name last_name username avatar');
+    const populatedQuestion = await updatedQuestion.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Create response object
     const questionResponse = {
@@ -178,4 +185,4 @@ async function handleVoteQuestion(req, res) {
   }
 }
 
-module.exports = handleVoteQuestion; 
+module.exports = handleVoteQuestion;

@@ -61,7 +61,10 @@ async function handleGetQuestionById(req, res) {
     }
 
     // Populate author information
-    const populatedQuestion = await question.populate('author', 'first_name last_name username avatar');
+    const populatedQuestion = await question.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Get answers for this question
     const answers = await findAndPopulate(
@@ -76,12 +79,12 @@ async function handleGetQuestionById(req, res) {
       // Accepted answers first
       if (a.isAccepted && !b.isAccepted) return -1;
       if (!a.isAccepted && b.isAccepted) return 1;
-      
+
       // Then by vote count
       const aVotes = a.upvotes.length - a.downvotes.length;
       const bVotes = b.upvotes.length - b.downvotes.length;
       if (aVotes !== bVotes) return bVotes - aVotes;
-      
+
       // Finally by date (newest first)
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
@@ -91,6 +94,7 @@ async function handleGetQuestionById(req, res) {
       _id: populatedQuestion._id,
       title: populatedQuestion.title,
       description: populatedQuestion.description,
+      images: populatedQuestion.images || [],
       tags: populatedQuestion.tags,
       author: {
         _id: populatedQuestion.author._id,
@@ -111,6 +115,7 @@ async function handleGetQuestionById(req, res) {
     const answersResponse = sortedAnswers.map(answer => ({
       _id: answer._id,
       body: answer.body,
+      images: answer.images || [],
       author: {
         _id: answer.author._id,
         first_name: answer.author.first_name,
@@ -141,4 +146,4 @@ async function handleGetQuestionById(req, res) {
   }
 }
 
-module.exports = handleGetQuestionById; 
+module.exports = handleGetQuestionById;

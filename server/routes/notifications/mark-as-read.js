@@ -63,7 +63,10 @@ async function handleMarkAsRead(req, res) {
     const userId = req.userId;
 
     // Check if notification exists and belongs to user
-    const notification = await findOne('notification', { _id: id, user: userId });
+    const notification = await findOne('notification', {
+      _id: id,
+      user: userId,
+    });
     if (!notification) {
       return res.status(404).json({
         status: 404,
@@ -72,9 +75,13 @@ async function handleMarkAsRead(req, res) {
     }
 
     // Mark notification as read
-    const updatedNotification = await updateDocument('notification', { _id: id }, {
-      isRead: true
-    });
+    const updatedNotification = await updateDocument(
+      'notification',
+      { _id: id },
+      {
+        isRead: true,
+      }
+    );
 
     return res.status(200).json({
       status: 200,
@@ -90,4 +97,4 @@ async function handleMarkAsRead(req, res) {
   }
 }
 
-module.exports = handleMarkAsRead; 
+module.exports = handleMarkAsRead;

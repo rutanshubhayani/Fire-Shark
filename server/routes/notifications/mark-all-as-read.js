@@ -44,8 +44,9 @@ async function handleMarkAllAsRead(req, res) {
     const userId = req.userId;
 
     // Mark all user notifications as read
-    const result = await customUpdate('notification', 
-      { user: userId, isRead: false }, 
+    const result = await customUpdate(
+      'notification',
+      { user: userId, isRead: false },
       { isRead: true }
     );
 
@@ -63,4 +64,4 @@ async function handleMarkAllAsRead(req, res) {
   }
 }
 
-module.exports = handleMarkAllAsRead; 
+module.exports = handleMarkAllAsRead;

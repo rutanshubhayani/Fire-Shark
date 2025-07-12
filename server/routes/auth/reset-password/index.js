@@ -3,12 +3,18 @@ const { findOne, updateDocument } = require('../../../helpers');
 const Joi = require('joi');
 
 const resetPasswordSchema = Joi.object({
-  newPassword: Joi.string().min(6).max(30).pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])')).required().messages({
-    'string.min': 'Password must be at least 6 characters long',
-    'string.max': 'Password cannot exceed 30 characters',
-    'string.pattern.base': 'Password must contain at least one uppercase letter, one lowercase letter, and one number',
-    'any.required': 'New password is required'
-  })
+  newPassword: Joi.string()
+    .min(6)
+    .max(30)
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])'))
+    .required()
+    .messages({
+      'string.min': 'Password must be at least 6 characters long',
+      'string.max': 'Password cannot exceed 30 characters',
+      'string.pattern.base':
+        'Password must contain at least one uppercase letter, one lowercase letter, and one number',
+      'any.required': 'New password is required',
+    }),
 });
 
 /**
@@ -95,9 +101,9 @@ async function handleResetPassword(req, res) {
   try {
     // Validate token from URL
     if (!token) {
-      return res.status(400).json({ 
-        status: 400, 
-        message: 'Reset token is required in URL parameters.' 
+      return res.status(400).json({
+        status: 400,
+        message: 'Reset token is required in URL parameters.',
       });
     }
 
@@ -107,30 +113,33 @@ async function handleResetPassword(req, res) {
     // Find user with valid reset token
     const user = await findOne('user', {
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: new Date() }
+      resetPasswordExpires: { $gt: new Date() },
     });
 
     if (!user) {
-      return res.status(400).json({ 
-        status: 400, 
-        message: 'Invalid or expired reset token.' 
+      return res.status(400).json({
+        status: 400,
+        message: 'Invalid or expired reset token.',
       });
     }
 
     // Hash new password and update user
     const hashedPassword = bcrypt.hashSync(newPassword, 12);
-    
-    await updateDocument('user', { _id: user._id }, {
-      password: hashedPassword,
-      resetPasswordToken: null,
-      resetPasswordExpires: null
-    });
 
-    return res.status(200).json({ 
-      status: 200, 
-      message: 'Password reset successfully.' 
-    });
+    await updateDocument(
+      'user',
+      { _id: user._id },
+      {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      }
+    );
 
+    return res.status(200).json({
+      status: 200,
+      message: 'Password reset successfully.',
+    });
   } catch (err) {
     if (err.isJoi) {
       return res.status(400).json({
@@ -148,4 +157,4 @@ async function handleResetPassword(req, res) {
   }
 }
 
-module.exports = handleResetPassword; 
+module.exports = handleResetPassword;

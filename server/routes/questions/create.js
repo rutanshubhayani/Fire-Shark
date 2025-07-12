@@ -12,11 +12,16 @@ const createQuestionSchema = Joi.object({
     'string.min': 'Description must be at least 20 characters long',
     'any.required': 'Description is required',
   }),
-  tags: Joi.array().items(Joi.string().min(1).max(20)).min(1).max(5).required().messages({
-    'array.min': 'At least one tag is required',
-    'array.max': 'Cannot exceed 5 tags',
-    'any.required': 'Tags are required',
-  }),
+  tags: Joi.array()
+    .items(Joi.string().min(1).max(20))
+    .min(1)
+    .max(5)
+    .required()
+    .messages({
+      'array.min': 'At least one tag is required',
+      'array.max': 'Cannot exceed 5 tags',
+      'any.required': 'Tags are required',
+    }),
 });
 
 /**
@@ -133,7 +138,10 @@ async function handleCreateQuestion(req, res) {
     const savedQuestion = await insertNewDocument('question', questionData);
 
     // Populate author information
-    const populatedQuestion = await savedQuestion.populate('author', 'first_name last_name username avatar');
+    const populatedQuestion = await savedQuestion.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Create response object
     const questionResponse = {
@@ -178,4 +186,4 @@ async function handleCreateQuestion(req, res) {
   }
 }
 
-module.exports = handleCreateQuestion; 
+module.exports = handleCreateQuestion;

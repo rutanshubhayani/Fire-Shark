@@ -56,12 +56,12 @@ async function handleGetAnswersByQuestion(req, res) {
       // Accepted answers first
       if (a.isAccepted && !b.isAccepted) return -1;
       if (!a.isAccepted && b.isAccepted) return 1;
-      
+
       // Then by vote count
       const aVotes = a.upvotes.length - a.downvotes.length;
       const bVotes = b.upvotes.length - b.downvotes.length;
       if (aVotes !== bVotes) return bVotes - aVotes;
-      
+
       // Finally by date (newest first)
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
@@ -70,6 +70,7 @@ async function handleGetAnswersByQuestion(req, res) {
     const answersResponse = sortedAnswers.map(answer => ({
       _id: answer._id,
       body: answer.body,
+      images: answer.images || [],
       author: {
         _id: answer.author._id,
         first_name: answer.author.first_name,
@@ -99,4 +100,4 @@ async function handleGetAnswersByQuestion(req, res) {
   }
 }
 
-module.exports = handleGetAnswersByQuestion; 
+module.exports = handleGetAnswersByQuestion;

@@ -5,12 +5,20 @@ const questions = require('./questions');
 const answers = require('./answers');
 const tags = require('./tags');
 const notifications = require('./notifications');
+const {
+  handleUploadAvatar,
+  handleRemoveAvatar,
+  upload: avatarUpload,
+} = require('./users/upload-avatar');
+const testAvatar = require('./users/test-avatar');
 const clearDatabase = require('./clear-database');
 const test = require('./test');
+const testGuest = require('./test-guest');
 const router = express.Router();
 
-// TEST Route * /api/test
+// TEST Routes * /api/test
 router.get('/test', test);
+router.get('/test-guest', testGuest);
 
 // AUTH Routes * /api/auth/*
 router.use('/auth', auth);
@@ -26,6 +34,16 @@ router.use('/tags', tags);
 
 // NOTIFICATIONS Routes * /api/notifications/*
 router.use('/notifications', notifications);
+
+// USERS Routes * /api/users/*
+router.post(
+  '/users/upload-avatar',
+  tokenVerification,
+  avatarUpload.single('avatar'),
+  handleUploadAvatar
+);
+router.delete('/users/remove-avatar', tokenVerification, handleRemoveAvatar);
+router.use('/users', testAvatar);
 
 // Clear Database Route * /api/clear-database
 router.post('/clear-database', clearDatabase);

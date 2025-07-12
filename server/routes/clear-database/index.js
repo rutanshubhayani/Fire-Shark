@@ -109,4 +109,3 @@ async function handleClearDatabase(req, res) {
 }
 
 module.exports = handleClearDatabase;
- 

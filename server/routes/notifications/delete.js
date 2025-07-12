@@ -61,7 +61,10 @@ async function handleDeleteNotification(req, res) {
     const userId = req.userId;
 
     // Check if notification exists and belongs to user
-    const notification = await findOne('notification', { _id: id, user: userId });
+    const notification = await findOne('notification', {
+      _id: id,
+      user: userId,
+    });
     if (!notification) {
       return res.status(404).json({
         status: 404,
@@ -85,4 +88,4 @@ async function handleDeleteNotification(req, res) {
   }
 }
 
-module.exports = handleDeleteNotification; 
+module.exports = handleDeleteNotification;

@@ -15,4 +15,4 @@ router.put('/:id/read', markAsRead);
 router.put('/mark-all-read', markAllAsRead);
 router.delete('/:id', deleteNotification);
 
-module.exports = router; 
+module.exports = router;

@@ -87,22 +87,22 @@ async function handleGetAllTags(req, res) {
       {
         $group: {
           _id: '$tags',
-          questionCount: { $sum: 1 }
-        }
+          questionCount: { $sum: 1 },
+        },
       },
       {
         $lookup: {
           from: 'tags',
           localField: '_id',
           foreignField: 'name',
-          as: 'tagInfo'
-        }
+          as: 'tagInfo',
+        },
       },
       {
         $unwind: {
           path: '$tagInfo',
-          preserveNullAndEmptyArrays: true
-        }
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $project: {
@@ -110,11 +110,11 @@ async function handleGetAllTags(req, res) {
           name: '$_id',
           description: { $ifNull: ['$tagInfo.description', ''] },
           questionCount: 1,
-          createdAt: { $ifNull: ['$tagInfo.createdAt', new Date()] }
-        }
+          createdAt: { $ifNull: ['$tagInfo.createdAt', new Date()] },
+        },
       },
       { $sort: sortObj },
-      { $limit: limitNum }
+      { $limit: limitNum },
     ]);
 
     return res.status(200).json({
@@ -131,4 +131,4 @@ async function handleGetAllTags(req, res) {
   }
 }
 
-module.exports = handleGetAllTags; 
+module.exports = handleGetAllTags;

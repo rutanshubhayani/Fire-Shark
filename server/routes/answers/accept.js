@@ -97,22 +97,37 @@ async function handleAcceptAnswer(req, res) {
     }
 
     // Unaccept any previously accepted answer for this question
-    await updateDocument('answer', { question: answer.question, isAccepted: true }, {
-      isAccepted: false
-    });
+    await updateDocument(
+      'answer',
+      { question: answer.question, isAccepted: true },
+      {
+        isAccepted: false,
+      }
+    );
 
     // Accept the current answer
-    await updateDocument('answer', { _id: id }, {
-      isAccepted: true
-    });
+    await updateDocument(
+      'answer',
+      { _id: id },
+      {
+        isAccepted: true,
+      }
+    );
 
     // Update question's accepted answer
-    const updatedQuestion = await updateDocument('question', { _id: answer.question }, {
-      acceptedAnswer: id
-    });
+    const updatedQuestion = await updateDocument(
+      'question',
+      { _id: answer.question },
+      {
+        acceptedAnswer: id,
+      }
+    );
 
     // Populate author information
-    const populatedQuestion = await updatedQuestion.populate('author', 'first_name last_name username avatar');
+    const populatedQuestion = await updatedQuestion.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Create response object
     const questionResponse = {
@@ -149,4 +164,4 @@ async function handleAcceptAnswer(req, res) {
   }
 }
 
-module.exports = handleAcceptAnswer; 
+module.exports = handleAcceptAnswer;

@@ -35,4 +35,4 @@ function handleTest(req, res) {
   });
 }
 
-module.exports = handleTest; 
+module.exports = handleTest;

@@ -185,10 +185,23 @@ async function handleLogin(req, res) {
 
     // Send login alert email
     try {
-      const loginTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
-      const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.ip || 'Unknown';
-      const resetLink = `${process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL_PROD : process.env.FRONTEND_URL_DEV}/forgot-password`;
-      const supportEmail = process.env.NODE_ENV === 'production' ? 'support@stackit.com' : 'support@stackit.com';
+      const loginTime = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Kolkata',
+      });
+      const ipAddress =
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.ip ||
+        'Unknown';
+      const resetLink = `${
+        process.env.NODE_ENV === 'production'
+          ? process.env.FRONTEND_URL_PROD
+          : process.env.FRONTEND_URL_DEV
+      }/forgot-password`;
+      const supportEmail =
+        process.env.NODE_ENV === 'production'
+          ? 'support@stackit.com'
+          : 'support@stackit.com';
       send_email(
         'login-alert',
         {

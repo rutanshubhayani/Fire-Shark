@@ -121,8 +121,10 @@ async function handleUpdateTag(req, res) {
 
     // Prepare update data
     const updateFields = {};
-    if (updateData.name) updateFields.name = updateData.name.toLowerCase().trim();
-    if (updateData.description !== undefined) updateFields.description = updateData.description.trim();
+    if (updateData.name)
+      updateFields.name = updateData.name.toLowerCase().trim();
+    if (updateData.description !== undefined)
+      updateFields.description = updateData.description.trim();
 
     // Update tag
     const updatedTag = await updateDocument('tag', { _id: id }, updateFields);
@@ -149,4 +151,4 @@ async function handleUpdateTag(req, res) {
   }
 }
 
-module.exports = handleUpdateTag; 
+module.exports = handleUpdateTag;

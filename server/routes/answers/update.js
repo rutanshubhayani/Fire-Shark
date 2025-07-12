@@ -112,12 +112,19 @@ async function handleUpdateAnswer(req, res) {
     }
 
     // Update answer
-    const updatedAnswer = await updateDocument('answer', { _id: id }, {
-      body: body.trim()
-    });
+    const updatedAnswer = await updateDocument(
+      'answer',
+      { _id: id },
+      {
+        body: body.trim(),
+      }
+    );
 
     // Populate author information
-    const populatedAnswer = await updatedAnswer.populate('author', 'first_name last_name username avatar');
+    const populatedAnswer = await updatedAnswer.populate(
+      'author',
+      'first_name last_name username avatar'
+    );
 
     // Create response object
     const answerResponse = {
@@ -160,4 +167,4 @@ async function handleUpdateAnswer(req, res) {
   }
 }
 
-module.exports = handleUpdateAnswer; 
+module.exports = handleUpdateAnswer;

@@ -13,17 +13,27 @@ const userSchema = new mongoose.Schema(
     },
     username: {
       type: schemaType.TypeString,
-      required: true,
-      unique: true,
+      required: function () {
+        return this.role !== 'guest';
+      },
+      unique: function () {
+        return this.role !== 'guest';
+      },
     },
     email: {
       type: schemaType.TypeString,
-      required: true,
-      unique: true,
+      required: function () {
+        return this.role !== 'guest';
+      },
+      unique: function () {
+        return this.role !== 'guest';
+      },
     },
     password: {
       type: schemaType.TypeString,
-      required: true,
+      required: function () {
+        return this.role !== 'guest';
+      },
     },
     role: {
       type: schemaType.TypeString,

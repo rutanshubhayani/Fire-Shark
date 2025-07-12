@@ -78,15 +78,23 @@ async function handleDeleteAnswer(req, res) {
     }
 
     // Remove answer from question's answers array
-    await updateDocument('question', { _id: answer.question }, {
-      $pull: { answers: id }
-    });
+    await updateDocument(
+      'question',
+      { _id: answer.question },
+      {
+        $pull: { answers: id },
+      }
+    );
 
     // If this answer was accepted, clear the accepted answer
     if (answer.isAccepted) {
-      await updateDocument('question', { _id: answer.question }, {
-        acceptedAnswer: null
-      });
+      await updateDocument(
+        'question',
+        { _id: answer.question },
+        {
+          acceptedAnswer: null,
+        }
+      );
     }
 
     // Delete the answer
@@ -105,4 +113,4 @@ async function handleDeleteAnswer(req, res) {
   }
 }
 
-module.exports = handleDeleteAnswer; 
+module.exports = handleDeleteAnswer;
