@@ -13,24 +13,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
  
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
  
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
  
-    --muted: 210 40% 96.1%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 221.2 83.2% 53.3%;
  
     --radius: 0.5rem;
   }
@@ -45,8 +45,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
  
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
  
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -62,7 +62,7 @@
  
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 224.3 76.3% 94.1%;
   }
 }
  
@@ -73,4 +73,217 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer components {
+  /* Custom StackIt Components */
+  .btn-stackit {
+    @apply bg-gradient-stackit hover:bg-gradient-stackit-hover text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-stackit hover:shadow-stackit-hover transform hover:scale-105;
+  }
+
+  .btn-stackit-outline {
+    @apply border-2 border-stackit-500 text-stackit-600 hover:bg-stackit-500 hover:text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200;
+  }
+
+  .card-stackit {
+    @apply bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:border-stackit-200;
+  }
+
+  .input-stackit {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stackit-500 focus:border-stackit-500 transition-all duration-200;
+  }
+
+  .nav-link {
+    @apply px-4 py-2 rounded-lg text-gray-700 hover:text-stackit-600 hover:bg-stackit-50 transition-all duration-200 font-medium;
+  }
+
+  .nav-link-active {
+    @apply px-4 py-2 rounded-lg text-stackit-600 bg-stackit-50 font-medium;
+  }
+
+  .tag-stackit {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-stackit-100 text-stackit-700 hover:bg-stackit-200 transition-colors duration-200;
+  }
+
+  .tag-stackit-selected {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-stackit-500 text-white;
+  }
+
+  .vote-button {
+    @apply p-2 rounded-lg hover:bg-stackit-50 text-gray-500 hover:text-stackit-600 transition-all duration-200;
+  }
+
+  .vote-button-active {
+    @apply p-2 rounded-lg bg-stackit-100 text-stackit-600;
+  }
+
+  .notification-badge {
+    @apply absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse;
+  }
+
+  .hero-gradient {
+    @apply bg-gradient-to-br from-stackit-500 via-stackit-600 to-stackit-700;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-stackit-600 to-stackit-700 bg-clip-text text-transparent;
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #c7d6ff #f0f4ff;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f0f4ff;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #c7d6ff;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a5b8ff;
+  }
+
+  /* Rich text editor styling */
+  .prose-stackit {
+    @apply max-w-none;
+  }
+
+  /* TipTap editor specific styles */
+  .ProseMirror {
+    @apply outline-none min-h-[200px] p-4 cursor-text;
+  }
+
+  .ProseMirror:focus {
+    @apply outline-none;
+  }
+
+  .ProseMirror p {
+    @apply mb-2;
+  }
+
+  .ProseMirror p:last-child {
+    @apply mb-0;
+  }
+
+  .ProseMirror p.is-editor-empty:first-child::before {
+    @apply text-gray-400 float-left h-0 pointer-events-none;
+    content: attr(data-placeholder);
+  }
+
+  .ProseMirror h1 {
+    @apply text-2xl font-bold text-gray-900 mb-4;
+  }
+
+  .ProseMirror h2 {
+    @apply text-xl font-semibold text-gray-900 mb-3;
+  }
+
+  .ProseMirror h3 {
+    @apply text-lg font-medium text-gray-900 mb-2;
+  }
+
+  .ProseMirror p {
+    @apply text-gray-700 mb-3;
+  }
+
+  .ProseMirror ul {
+    @apply list-disc list-inside mb-3;
+  }
+
+  .ProseMirror ol {
+    @apply list-decimal list-inside mb-3;
+  }
+
+  .ProseMirror a {
+    @apply text-stackit-600 hover:text-stackit-700 underline;
+  }
+
+  .ProseMirror blockquote {
+    @apply border-l-4 border-stackit-300 pl-4 italic text-gray-600;
+  }
+
+  .ProseMirror code {
+    @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+  }
+
+  .ProseMirror pre {
+    @apply bg-gray-100 p-4 rounded-lg overflow-x-auto;
+  }
+
+  .prose-stackit h1 {
+    @apply text-2xl font-bold text-gray-900 mb-4;
+  }
+
+  .prose-stackit h2 {
+    @apply text-xl font-semibold text-gray-900 mb-3;
+  }
+
+  .prose-stackit h3 {
+    @apply text-lg font-medium text-gray-900 mb-2;
+  }
+
+  .prose-stackit p {
+    @apply text-gray-700 mb-3;
+  }
+
+  .prose-stackit ul {
+    @apply list-disc list-inside mb-3;
+  }
+
+  .prose-stackit ol {
+    @apply list-decimal list-inside mb-3;
+  }
+
+  .prose-stackit a {
+    @apply text-stackit-600 hover:text-stackit-700 underline;
+  }
+
+  .prose-stackit blockquote {
+    @apply border-l-4 border-stackit-300 pl-4 italic text-gray-600;
+  }
+
+  .prose-stackit code {
+    @apply bg-gray-100 px-2 py-1 rounded text-sm font-mono;
+  }
+
+  .prose-stackit pre {
+    @apply bg-gray-100 p-4 rounded-lg overflow-x-auto;
+  }
+}
+
+/* Loading spinner */
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-stackit-600;
+}
+
+/* Toast styling */
+.toast-success {
+  @apply bg-green-500 text-white;
+}
+
+.toast-error {
+  @apply bg-red-500 text-white;
+}
+
+.toast-info {
+  @apply bg-stackit-500 text-white;
 }
