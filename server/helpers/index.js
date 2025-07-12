@@ -147,6 +147,48 @@ const getDataSelectWithLimit = async (
     .limit(limit)
     .exec();
 
+const getDbUserData = async (modelDb, field, value) => {
+  const query = {};
+  query[field] = value;
+  return await Models[modelDb].findOne(query).exec();
+};
+
+const createDefaultAdmin = async adminConfig => {
+  try {
+    const existingAdmin = await findOne('user', {
+      $or: [
+        { email: adminConfig.ADMIN_EMAIL },
+        { username: adminConfig.ADMIN_USERNAME },
+      ],
+    });
+
+    if (!existingAdmin) {
+      const bcrypt = require('bcryptjs');
+      const adminUser = {
+        first_name: adminConfig.ADMIN_FIRST_NAME,
+        last_name: adminConfig.ADMIN_LAST_NAME,
+        username: adminConfig.ADMIN_USERNAME,
+        email: adminConfig.ADMIN_EMAIL,
+        password: bcrypt.hashSync(adminConfig.ADMIN_PASSWORD, 10),
+        role: 'admin',
+      };
+
+      const savedAdmin = await insertNewDocument('user', adminUser);
+      console.log('✅ Default admin created successfully!');
+      console.log(`   Username: ${adminConfig.ADMIN_USERNAME}`);
+      console.log(`   Email: ${adminConfig.ADMIN_EMAIL}`);
+      console.log(`   Password: ${adminConfig.ADMIN_PASSWORD}`);
+      return savedAdmin;
+    } else {
+      console.log('ℹ️  Admin user already exists');
+      return existingAdmin;
+    }
+  } catch (error) {
+    console.error('❌ Error creating admin user:', error.message);
+    return null;
+  }
+};
+
 module.exports = {
   find,
   findOne,
@@ -167,4 +209,6 @@ module.exports = {
   findSliceAndPopulate,
   findOneAndSelect,
   findPopulateSortAndLimit,
+  getDbUserData,
+  createDefaultAdmin,
 };

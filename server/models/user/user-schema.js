@@ -38,6 +38,19 @@ const userSchema = new mongoose.Schema(
       type: schemaType.TypeString,
       default: '',
     },
+    // Email verification fields
+    isEmailVerified: {
+      type: schemaType.TypeBoolean,
+      default: false,
+    },
+    emailVerificationToken: {
+      type: schemaType.TypeString,
+      default: null,
+    },
+    emailVerificationExpires: {
+      type: schemaType.TypeDate,
+      default: null,
+    },
   },
   { timestamps: true }
 );
