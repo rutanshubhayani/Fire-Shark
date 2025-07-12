@@ -29,6 +29,10 @@ const options = {
         url: FRONTEND_URL_PROD,
         description: 'Production server',
       },
+      {
+        url: 'https://fireshark-server.vercel.app',
+        description: 'Vercel Production server',
+      },
     ],
     components: {
       securitySchemes: {
