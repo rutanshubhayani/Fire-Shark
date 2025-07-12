@@ -11,4 +11,10 @@ module.exports = {
   MAIL_PORT: process.env.MAIL_PORT,
   MAIL_USER: process.env.MAIL_USER,
   MAIL_PASS: process.env.MAIL_PASS,
+
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+  ADMIN_FIRST_NAME: process.env.ADMIN_FIRST_NAME,
+  ADMIN_LAST_NAME: process.env.ADMIN_LAST_NAME,
 };

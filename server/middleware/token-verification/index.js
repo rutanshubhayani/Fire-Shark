@@ -7,17 +7,13 @@ const tokenVerification = (req, res, next) => {
   if (!token) {
     return res.status(404).send({ status: 404, message: 'No token provided!' });
   }
-  jwt.verify(token, Config.secret, async (err, decoded) => {
+  jwt.verify(token, Config.SECRET, async (err, decoded) => {
     if (err) {
       return res
         .status(400)
         .send({ status: 400, message: 'Token Unauthorized!' });
     }
-    const isUserExist = await getDbUserData(
-      'user',
-      'mobileNumber',
-      decoded.mobileNumber
-    );
+    const isUserExist = await getDbUserData('user', '_id', decoded.id);
     if (!isUserExist) {
       return res
         .status(404)

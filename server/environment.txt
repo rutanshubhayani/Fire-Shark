@@ -6,9 +6,22 @@ DB_PASS=fire_shark
 
 JWT_SECRET=fire_shark_jwt_secret_2024
 
+# Default Admin User
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@stackit.com
+ADMIN_PASSWORD=admin123
+ADMIN_FIRST_NAME=Admin
+ADMIN_LAST_NAME=User
+
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=465
 MAIL_USER=your_email@gmail.com
 MAIL_PASS=your_email_app_password
 
 NODE_ENV=development 
+
+ADMIN_USERNAME=admin
+ADMIN_EMAIL=admin@stackit.com
+ADMIN_PASSWORD=admin123
+ADMIN_FIRST_NAME=Admin
+ADMIN_LAST_NAME=Admin
