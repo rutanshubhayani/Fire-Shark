@@ -61,6 +61,7 @@ const Home: React.FC = () => {
     return upvotes.length - downvotes.length;
   };
 
+  
   // Fetch recent questions
   const { data: recentQuestionsData, error: questionsError, isLoading: questionsLoading } = useQuery({
     queryKey: ['recent-questions'],
