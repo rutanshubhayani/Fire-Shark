@@ -22,6 +22,10 @@ const options = {
     },
     servers: [
       {
+        url: 'http://localhost:3000',
+        description: 'Local Development server',
+      },
+      {
         url: FRONTEND_URL_DEV,
         description: 'Development server',
       },
