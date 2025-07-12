@@ -43,7 +43,6 @@ const Register: React.FC = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      // Register the user
       const response = await authAPI.register({
         first_name: data.first_name,
         last_name: data.last_name,
