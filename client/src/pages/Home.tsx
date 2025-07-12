@@ -56,12 +56,6 @@ const Home: React.FC = () => {
     return colors[index];
   };
 
-  // Calculate vote counts
-  const getVoteCount = (upvotes: string[] = [], downvotes: string[] = []) => {
-    return upvotes.length - downvotes.length;
-  };
-
-  
   // Fetch recent questions
   const { data: recentQuestionsData, error: questionsError, isLoading: questionsLoading } = useQuery({
     queryKey: ['recent-questions'],
@@ -104,7 +98,7 @@ const Home: React.FC = () => {
   const tags = Array.isArray(popularTagsData) ? popularTagsData : [];
 
   // Fetch stats
-  const { data: statsData, error: statsError, isLoading: statsLoading } = useQuery({
+  const { data: statsData, isLoading: statsLoading } = useQuery({
     queryKey: ['stats'],
     queryFn: () => statsAPI.getAll().then(res => res.data?.stats || {}),
     retry: 1,

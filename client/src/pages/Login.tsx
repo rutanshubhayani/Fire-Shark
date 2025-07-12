@@ -9,7 +9,7 @@ import { Input } from '../components/ui/input';
 import { authAPI } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, User } from 'lucide-react';
+import { Eye, EyeOff, Lock, ArrowLeft, User } from 'lucide-react';
 
 const loginSchema = z.object({
   identifier: z.string().min(1, 'Username or email is required'),

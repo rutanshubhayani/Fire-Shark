@@ -48,13 +48,13 @@ const AskQuestion: React.FC = () => {
     queryFn: () => tagsAPI.getAll().then(res => res.data),
   });
 
+  // @ts-ignore
   const availableTags = Array.isArray(availableTagsData?.tags) ? availableTagsData.tags : [];
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<AskQuestionFormData>({
     resolver: zodResolver(askQuestionSchema),
@@ -94,12 +94,6 @@ const AskQuestion: React.FC = () => {
     setValue('tags', newTags);
   };
 
-  const handleTagClick = (tag: string) => {
-    if (!selectedTags.includes(tag) && selectedTags.length < 5) {
-      addTag(tag);
-    }
-  };
-
   const onSubmit = async (data: AskQuestionFormData) => {
     // Validate that description has content
     if (!description || description.trim().length < 20) {
@@ -115,6 +109,7 @@ const AskQuestion: React.FC = () => {
 
     setIsLoading(true);
     try {
+      // @ts-ignore
       const response = await questionsAPI.create({
         title: data.title,
         description: description, // Use the HTML content from rich text editor

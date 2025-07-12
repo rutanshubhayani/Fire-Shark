@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient, useQueries } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -17,9 +17,7 @@ import {
   Plus,
   ArrowUp,
   ArrowDown,
-  X,
-  Eye,
-  User
+  X
 } from 'lucide-react';
 import { formatDate } from '../lib/utils';
 import RichTextEditor from '../components/RichTextEditor';
@@ -170,7 +168,10 @@ const Questions: React.FC = () => {
       });
       return { previousData };
     },
-    onError: (err, variables, context) => {
+    onError: (
+      // @ts-ignore
+      err, variables, context
+    ) => {
       if (context?.previousData) {
         queryClient.setQueryData(['questions', { searchQuery, selectedTag, sortBy, currentPage }], context.previousData);
       }

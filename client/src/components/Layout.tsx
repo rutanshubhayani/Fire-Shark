@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Card } from './ui/card';
 import { Bell, Search, Menu, X, User, LogOut, Settings, LogIn, Check, Trash2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';

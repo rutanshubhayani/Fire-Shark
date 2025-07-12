@@ -43,13 +43,8 @@ const Register: React.FC = () => {
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     try {
-      const response = await authAPI.register({
-        first_name: data.first_name,
-        last_name: data.last_name,
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      });
+      const { confirmPassword, ...registerData } = data;
+      await authAPI.register(registerData);
       
       // If registration is successful, log in the user to create session
       const loginResponse = await authAPI.login({

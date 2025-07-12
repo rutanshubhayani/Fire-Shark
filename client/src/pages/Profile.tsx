@@ -4,8 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useQuery } from '@tanstack/react-query';
-import { questionsAPI, userAPI } from '../lib/api';
-import GuestProfile from '../components/GuestProfile';
+import { userAPI } from '../lib/api';
 import { 
   User, 
   Mail, 
@@ -22,6 +21,7 @@ import {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  // @ts-ignore
   const { user, isAuthenticated, logout } = useAuth();
 
   // Fetch user's questions (only for non-guest users)
@@ -49,12 +49,6 @@ const Profile: React.FC = () => {
   const userQuestions = Array.isArray(userQuestionsData?.questions) ? userQuestionsData.questions : [];
   const userAnswers = Array.isArray(userAnswersData?.answers) ? userAnswersData.answers : [];
   const userStats = userStatsData || {};
-
-  const handleSwitchToMainLogin = () => {
-    logout();
-    // Redirect to login page
-    navigate('/login');
-  };
 
   if (!isAuthenticated) {
     return (

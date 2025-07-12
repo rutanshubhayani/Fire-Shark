@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { User, Mail, Calendar, LogIn, AlertCircle } from 'lucide-react';
+import { User, LogIn, AlertCircle } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface GuestProfileProps {
