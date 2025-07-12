@@ -180,6 +180,7 @@ const Questions: React.FC = () => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['questions'] });
       setVotingQuestionId(null);
+      
     },
   });
 
