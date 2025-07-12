@@ -34,9 +34,42 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 // * Api routes
 app.use('/api', routes);
 
+app.get('/verify-email', (req, res) => {
+  const { token, verified } = req.query;
+  if (verified === 'success') {
+    return res.send('<h2>Email verified! You can now log in.</h2>');
+  }
+  if (verified === 'fail') {
+    return res.send('<h2>Verification failed or link expired.</h2>');
+  }
+  if (!token) {
+    return res.status(400).send('Invalid verification link.');
+  }
+  res.redirect(`/api/auth/verify-email?token=${token}`);
+});
+
+app.get('/reset-password', (req, res) => {
+  const { token, reset } = req.query;
+  if (reset === 'success') {
+    return res.send('<h2>Password reset successfully! You can now log in with your new password.</h2>');
+  }
+  if (reset === 'fail') {
+    return res.send('<h2>Password reset failed or link expired.</h2>');
+  }
+  if (!token) {
+    return res.status(400).send('Invalid reset link.');
+  }
+  res.redirect(`/api/auth/reset-password?token=${token}`);
+});
+
 app.get('/', (req, res) => {
-  console.log('hello');
-  res.send('hello');
+  const baseUrl = req.protocol + '://' + req.get('host');
+  res.json({
+    message: 'Welcome to the StackIt Q&A Platform API!',
+    apiBaseUrl: baseUrl + '/api',
+    swaggerDocs: baseUrl + '/api-docs',
+    status: 'OK',
+  });
 });
 
 app.use('*', (req, res) => {
@@ -45,17 +78,16 @@ app.use('*', (req, res) => {
 
 const { PORT, NODE_ENV } = require('./config');
 
-app.listen(PORT || 3000, () => {
+app.listen(PORT || 8080, () => {
   const isDevelopment = (NODE_ENV || 'development') === 'development';
   const baseUrl = isDevelopment
-    ? `http://localhost:${PORT || 3000}`
+    ? `http://localhost:${PORT || 8080}`
     : `https://api.fire-shark.com`;
 
   console.log(
-    `🚀 Server is running on PORT ${PORT || 3000} in ${
+    `🚀 Server is running on PORT ${PORT || 8080} in ${
       NODE_ENV || 'development'
     } mode`
   );
   console.log(`Swagger Documentation: ${baseUrl}/api-docs`);
-  console.log(`API Base URL: ${baseUrl}/api/`);
 });

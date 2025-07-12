@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Alert - StackIt</title>
+    <style>
+      body {
+        background: #f9f9f9;
+        color: #383f51;
+        font-family: helvetica, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        border: 1px solid #dfdfdf;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 32px 24px;
+      }
+      .button {
+        background: #008ba4;
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        margin: 16px 0;
+      }
+      .footer {
+        margin-top: 32px;
+        font-size: 14px;
+        color: #888;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login Alert</h2>
+      <p>Hi <strong>{{username}}</strong>,</p>
+      <p>Your StackIt account was just logged in.</p>
+      <table style="margin: 16px 0; font-size: 16px;">
+        <tr>
+          <td><strong>Login Time:</strong></td>
+          <td>{{loginTime}}</td>
+        </tr>
+        <tr>
+          <td><strong>IP Address:</strong></td>
+          <td>{{ipAddress}}</td>
+        </tr>
+      </table>
+      <p>If this was you, you can safely ignore this email.</p>
+      <p>If you did <strong>not</strong> perform this login, please <a href="{{resetLink}}" class="button">reset your password</a> immediately or contact our support team.</p>
+      <p class="footer">
+        If you have any questions, contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a>.<br />
+        ---- Powered by StackIt - Collaborative Learning Platform ----
+      </p>
+    </div>
+  </body>
+</html> 

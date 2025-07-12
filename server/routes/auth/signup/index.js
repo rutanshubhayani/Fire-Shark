@@ -47,6 +47,118 @@ const generateVerificationToken = () => {
   );
 };
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     description: Create a new user account with email verification
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - first_name
+ *               - last_name
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 50
+ *                 example: "John"
+ *                 description: User's first name
+ *               last_name:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 50
+ *                 example: "Doe"
+ *                 description: User's last name
+ *               username:
+ *                 type: string
+ *                 minLength: 3
+ *                 maxLength: 30
+ *                 pattern: '^[a-zA-Z0-9]+$'
+ *                 example: "johndoe"
+ *                 description: Unique username (alphanumeric only)
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "john@example.com"
+ *                 description: User's email address
+ *               password:
+ *                 type: string
+ *                 minLength: 6
+ *                 maxLength: 30
+ *                 pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])'
+ *                 example: "Password123"
+ *                 description: Password (must contain uppercase, lowercase, and number)
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 201
+ *                 message:
+ *                   type: string
+ *                   example: "User registered successfully! Please check your email to verify your account."
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   example: "jwt_token_here"
+ *                 requiresEmailVerification:
+ *                   type: boolean
+ *                   example: true
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "First name must be at least 2 characters long"
+ *                 field:
+ *                   type: string
+ *                   example: "first_name"
+ *       409:
+ *         description: User already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 409
+ *                 message:
+ *                   type: string
+ *                   example: "An account with this email already exists."
+ *                 field:
+ *                   type: string
+ *                   example: "email"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 async function handleSignup(req, res) {
   const { first_name, last_name, username, email, password } = req.body;
 
@@ -116,9 +228,15 @@ async function handleSignup(req, res) {
         {
           username: savedUser.first_name,
           verificationLink: `${
-            process.env.FRONTEND_URL || 'http://localhost:3000'
+            process.env.NODE_ENV === 'production'
+              ? process.env.FRONTEND_URL_PROD
+              : process.env.FRONTEND_URL_DEV
           }/verify-email?token=${verificationToken}`,
           email: savedUser.email,
+          supportEmail:
+            process.env.NODE_ENV === 'production'
+              ? 'support@stackit.com'
+              : 'support@stackit.com',
         },
         'StackIt',
         'Welcome to StackIt! Please verify your email',

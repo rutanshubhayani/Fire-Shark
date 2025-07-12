@@ -1,14 +1,55 @@
 const { findOne, updateDocument } = require('../../../helpers');
+const Config = require('../../../config');
 
+/**
+ * @swagger
+ * /api/auth/verify-email:
+ *   get:
+ *     summary: Verify email address
+ *     description: Verify user's email address using verification token
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: query
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Email verification token
+ *         example: "bkeylo2ncx6qwgoeop48b"
+ *     responses:
+ *       302:
+ *         description: Redirect to frontend with verification result
+ *       400:
+ *         description: Invalid or expired token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid or expired verification token."
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 async function handleEmailVerification(req, res) {
   const { token } = req.query;
 
+  const frontendUrl =
+    (process.env.NODE_ENV === 'production'
+      ? Config.FRONTEND_URL_PROD
+      : Config.FRONTEND_URL_DEV) + '/verify-email';
+
   try {
     if (!token) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Verification token is required.',
-      });
+      return res.redirect(frontendUrl + '?verified=fail');
     }
 
     // Find user with this verification token
@@ -18,14 +59,12 @@ async function handleEmailVerification(req, res) {
     });
 
     if (!user) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Invalid or expired verification token.',
-      });
+      // Redirect to frontend with error
+      return res.redirect(frontendUrl + '?verified=fail');
     }
 
     // Update user to mark email as verified
-    const updatedUser = await updateDocument(
+    await updateDocument(
       'user',
       { _id: user._id },
       {
@@ -35,33 +74,11 @@ async function handleEmailVerification(req, res) {
       }
     );
 
-    if (!updatedUser) {
-      return res.status(500).json({
-        status: 500,
-        message: 'Failed to verify email. Please try again.',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      message:
-        'Email verified successfully! You can now login to your account.',
-      user: {
-        _id: updatedUser._id,
-        first_name: updatedUser.first_name,
-        last_name: updatedUser.last_name,
-        username: updatedUser.username,
-        email: updatedUser.email,
-        isEmailVerified: updatedUser.isEmailVerified,
-        role: updatedUser.role,
-      },
-    });
+    // Redirect to frontend with success
+    return res.redirect(frontendUrl + '?verified=success');
   } catch (error) {
-    console.error('Email verification error:', error);
-    return res.status(500).json({
-      status: 500,
-      message: 'Internal server error. Please try again later.',
-    });
+    // Redirect to frontend with error
+    return res.redirect(frontendUrl + '?verified=fail');
   }
 }
 
