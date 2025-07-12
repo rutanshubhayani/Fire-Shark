@@ -11,10 +11,13 @@ module.exports = {
   MAIL_PORT: process.env.MAIL_PORT,
   MAIL_USER: process.env.MAIL_USER,
   MAIL_PASS: process.env.MAIL_PASS,
-
-  ADMIN_USERNAME: process.env.ADMIN_USERNAME,
-  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
-  ADMIN_FIRST_NAME: process.env.ADMIN_FIRST_NAME,
-  ADMIN_LAST_NAME: process.env.ADMIN_LAST_NAME,
+  // Frontend URLs
+  FRONTEND_URL_DEV: process.env.FRONTEND_URL_DEV || 'http://localhost:3000',
+  FRONTEND_URL_PROD: process.env.FRONTEND_URL_PROD || 'https://yourdomain.com',
+  // Admin credentials
+  ADMIN_USERNAME: process.env.ADMIN_USERNAME || 'admin',
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL || 'admin@stackit.com',
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'admin123',
+  ADMIN_FIRST_NAME: process.env.ADMIN_FIRST_NAME || 'Admin',
+  ADMIN_LAST_NAME: process.env.ADMIN_LAST_NAME || 'User',
 };

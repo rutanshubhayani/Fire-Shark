@@ -4,24 +4,20 @@ DB_NAME=hackathon
 DB_USER=fire_shark
 DB_PASS=fire_shark
 
-JWT_SECRET=fire_shark_jwt_secret_2024
+JWT_SECRET=fire_shark_jwt_secret_2025
 
-# Default Admin User
-ADMIN_USERNAME=admin
-ADMIN_EMAIL=admin@stackit.com
-ADMIN_PASSWORD=admin123
-ADMIN_FIRST_NAME=Admin
-ADMIN_LAST_NAME=User
+FRONTEND_URL_DEV=http://localhost:3000
+FRONTEND_URL_PROD=https://yourdomain.com
 
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=465
-MAIL_USER=your_email@gmail.com
-MAIL_PASS=your_email_app_password
+MAIL_USER=littlemovie00@gmail.com
+MAIL_PASS=mewxfqxwpostjmxe
 
 NODE_ENV=development 
 
 ADMIN_USERNAME=admin
 ADMIN_EMAIL=admin@stackit.com
 ADMIN_PASSWORD=admin123
-ADMIN_FIRST_NAME=Admin
-ADMIN_LAST_NAME=Admin
+ADMIN_FIRST_NAME=Rhythm
+ADMIN_LAST_NAME=Italiya
